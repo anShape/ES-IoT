@@ -1,5 +1,3 @@
-#include "uarts.h"
-
 int dec(int binary_val)
 {
   int  num, decimal_val = 0, base = 1, rem;
@@ -16,12 +14,17 @@ int dec(int binary_val)
 }
 
 void fun1(uint16_t angle){
-  OCR1A = (angle*22.22)+1000;
-  Serial.println(dec(OCR1A));
+  Serial.print(angle);
+  Serial.print(" ");
+  OCR1A = (angle*11.11)+2000;
+  Serial.println(OCR1A);
+  // Serial.println(dec(OCR1A));
 }
 
 void setup() {
   // put your setup code here, to run once:
+  pinMode(A0, INPUT);
+
   // Reset TCCR1
   TCCR1A = 0;
   TCCR1B = 0;
@@ -43,31 +46,13 @@ void setup() {
   // Set pin for output
   DDRB |= (1 << PB1);
 
-  initServo();
-  UART_Init();
-
-  fun1(0);
-  delay(100);
-
   Serial.begin(115200);
 }
 
 void loop() {
-  fun1(0);
-  delay(1000);
-
-  fun1(45);
-  delay(1000);
-  
-  fun1(90);
-  delay(1000);
-  
-  fun1(135);
-  delay(1000);
-
-  fun1(180);
-  delay(1000);
-  
+  int readd = analogRead(A0);
+  uint16_t ang = (readd/1023.0)*180.0;
+  fun1(ang);
 }
 
 ISR(TIMER1_COMPA_vect){
